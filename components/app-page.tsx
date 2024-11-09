@@ -43,6 +43,7 @@ export function BlockPage() {
   useEffect(() => {
     const initializeFirebase = async () => {
       try {
+        console.log(messaging);
         // 1. Firebaseの初期化
         const app: FirebaseApp = initializeApp(firebaseConfig);
         const messagingInstance: Messaging = getMessaging(app);
