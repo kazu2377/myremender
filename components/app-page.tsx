@@ -153,7 +153,6 @@ export function BlockPage() {
             reminderId: reminder.id,
           },
         };
-
         // 5. ローカルストレージに通知データを保存
         const notifications = JSON.parse(
           localStorage.getItem("scheduledNotifications") || "[]"
@@ -186,6 +185,7 @@ export function BlockPage() {
                 },
               ],
             });
+            alert("okきたよ");
           } catch (error) {
             console.error("Error showing notification:", error);
           }
