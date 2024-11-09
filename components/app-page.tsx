@@ -65,14 +65,17 @@ export function BlockPage() {
             console.log("FCM Token:", token);
 
             // 5. フォアグラウンドメッセージの処理
+            // 5. フォアグラウンドメッセージの処理
             onMessage(messagingInstance, (payload) => {
               console.log("Received foreground message:", payload);
               const { title, body } = payload.notification || {};
               if (title && body) {
-                registration.showNotification(title, {
-                  body,
-                  icon: "/icon-192x192.png",
-                });
+                if (Notification.permission === "granted") {
+                  new Notification(title, {
+                    body,
+                    icon: "/icon-192x192.png",
+                  });
+                }
               }
             });
           }
