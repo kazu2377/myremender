@@ -174,17 +174,17 @@ export function BlockPage() {
               badge: "/icon-192x192.png",
               tag: notificationData.tag,
               requireInteraction: true,
-              data: notificationData.data,
-              actions: [
-                {
-                  action: "open",
-                  title: "開く",
-                },
-                {
-                  action: "dismiss",
-                  title: "閉じる",
-                },
-              ],
+              // data: notificationData.data,
+              // actions: [
+              //   {
+              //     action: "open",
+              //     title: "開く",
+              //   },
+              //   {
+              //     action: "dismiss",
+              //     title: "閉じる",
+              //   },
+              // ],
             });
             alert("okきたよ");
           } catch (error) {
