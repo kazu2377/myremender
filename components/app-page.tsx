@@ -88,7 +88,7 @@ export function BlockPage() {
 
     initializeFirebase(); // 1～5の初期化プロセスを開始
     loadReminders(); // リマインダーの読み込み
-  }, []);
+  }, [messaging]);
 
   // サービスワーカーの登録関数
   const registerServiceWorker = async () => {
@@ -96,7 +96,7 @@ export function BlockPage() {
       try {
         // 3. サービスワーカーの登録
         const registration = await navigator.serviceWorker.register(
-          "/firebase-messaging-sw.js",
+          "firebase-messaging-sw.js",
           {
             scope: "/", // サービスワーカーのスコープを指定
           }
