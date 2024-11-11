@@ -1,9 +1,10 @@
 // Import and configure the Firebase SDK
+// Import and configure the Firebase SDK
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging-compat.js"
 );
 
 const firebaseConfig = {
@@ -22,6 +23,7 @@ const messaging = firebase.messaging();
 // バックグラウンドでのメッセージ受信処理
 messaging.onBackgroundMessage(function (payload) {
   console.log("Received background message:", payload);
+  console.log("1");
 
   const notificationTitle = payload.notification.title || "リマインダー";
   const notificationOptions = {
@@ -32,6 +34,7 @@ messaging.onBackgroundMessage(function (payload) {
     requireInteraction: true,
     data: payload.data,
   };
+  console.log("2");
 
   return self.registration.showNotification(
     notificationTitle,
