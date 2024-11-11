@@ -43,27 +43,48 @@ messaging.onBackgroundMessage(function (payload) {
 
 // バックグラウンドでのメッセージ受信処理
 self.addEventListener("push", function (event) {
-  console.log("Received a push message", event);
+  console.log("プッシュメッセージを受信しました", event);
 
-  var payload = event.data ? event.data.json() : {};
-  console.log("Payload:", payload);
+  try {
+    var payload = event.data ? event.data.json() : {};
+    console.log("ペイロード:", JSON.stringify(payload, null, 2));
 
-  const notificationTitle = payload.notification.title || "リマインダー";
-  const notificationOptions = {
-    body: payload.notification.body || payload.data.message || "",
-    icon: "/icon-192x192.png",
-    badge: "/icon-192x192.png",
-    tag: payload.data.tag || Date.now().toString(),
-    requireInteraction: true,
-    data: payload.data,
-  };
-  console.log("aaaaaaaaaa:");
-  alert("ok");
+    const notificationTitle =
+      payload.notification?.title || payload.data?.title || "リマインダー";
+    const notificationOptions = {
+      body:
+        payload.notification?.body ||
+        payload.data?.body ||
+        payload.data?.message ||
+        "",
+      icon: "/icon-192x192.png",
+      badge: "/icon-192x192.png",
+      tag: payload.data?.tag || Date.now().toString(),
+      requireInteraction: true,
+      data: payload.data || {},
+    };
 
-  event.waitUntil(
-    self.registration.showNotification(notificationTitle, notificationOptions)
-  );
+    console.log("通知タイトル:", notificationTitle);
+    console.log(
+      "通知オプション:",
+      JSON.stringify(notificationOptions, null, 2)
+    );
+
+    event.waitUntil(
+      self.registration
+        .showNotification(notificationTitle, notificationOptions)
+        .then(() => {
+          console.log("通知が正常に表示されました");
+        })
+        .catch((error) => {
+          console.error("通知の表示中にエラーが発生しました:", error);
+        })
+    );
+  } catch (error) {
+    console.error("プッシュメッセージの処理中にエラーが発生しました:", error);
+  }
 });
+
 self.addEventListener("install", (event) => {
   console.log("Service Worker installing.");
 });
