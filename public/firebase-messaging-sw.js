@@ -22,7 +22,6 @@ const messaging = firebase.messaging();
 
 // バックグラウンドでのメッセージ受信処理
 messaging.onBackgroundMessage(function (payload) {
-  console.log("Received background message:", payload);
   console.log("1");
 
   const notificationTitle = payload.notification.title || "リマインダー";
@@ -42,31 +41,43 @@ messaging.onBackgroundMessage(function (payload) {
   );
 });
 
-// 通知クリック時の処理
+// バックグラウンドでのメッセージ受信処理
+self.addEventListener("push", function (event) {
+  console.log("Received a push message", event);
+
+  var payload = event.data ? event.data.json() : {};
+  console.log("Payload:", payload);
+
+  const notificationTitle = payload.notification.title || "リマインダー";
+  const notificationOptions = {
+    body: payload.notification.body || payload.data.message || "",
+    icon: "/icon-192x192.png",
+    badge: "/icon-192x192.png",
+    tag: payload.data.tag || Date.now().toString(),
+    requireInteraction: true,
+    data: payload.data,
+  };
+  console.log("aaaaaaaaaa:");
+  alert("ok");
+
+  event.waitUntil(
+    self.registration.showNotification(notificationTitle, notificationOptions)
+  );
+});
+self.addEventListener("install", (event) => {
+  console.log("Service Worker installing.");
+});
+
+self.addEventListener("activate", (event) => {
+  console.log("Service Worker activating.");
+});
+
 self.addEventListener("notificationclick", function (event) {
+  console.log("Notification clicked", event);
   event.notification.close();
+  // 通知クリック時の処理をここに追加
+});
 
-  // 通知をクリックしたときにアプリを開く
-  const urlToOpen = new URL("/", self.location.origin).href;
-
-  const promiseChain = clients
-    .matchAll({
-      type: "window",
-      includeUncontrolled: true,
-    })
-    .then((windowClients) => {
-      // すでに開いているウィンドウがあればそれをフォーカス
-      for (let i = 0; i < windowClients.length; i++) {
-        const client = windowClients[i];
-        if (client.url === urlToOpen && "focus" in client) {
-          return client.focus();
-        }
-      }
-      // 開いているウィンドウがなければ新しく開く
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    });
-
-  event.waitUntil(promiseChain);
+self.addEventListener("error", function (event) {
+  console.error("Service Worker error:", event.error);
 });
