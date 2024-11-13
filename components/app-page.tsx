@@ -38,6 +38,7 @@ export function BlockPage() {
   const [messaging, setMessaging] = useState<Messaging | null>(null);
   const [notificationPermission, setNotificationPermission] =
     useState<NotificationPermission>("default");
+  const [fcmToken, setFcmToken] = useState<string | null>(null); // 追加
 
   // 初期化とリマインダーの読み込み
   useEffect(() => {
@@ -64,8 +65,8 @@ export function BlockPage() {
               serviceWorkerRegistration: registration,
             });
             console.log("FCM Token:", token);
+            setFcmToken(token); // 追加
 
-            // 5. フォアグラウンドメッセージの処理
             // 5. フォアグラウンドメッセージの処理
             onMessage(messagingInstance, (payload) => {
               console.log("Received foreground message:", payload);
@@ -174,17 +175,6 @@ export function BlockPage() {
               badge: "/icon-192x192.png",
               tag: notificationData.tag,
               requireInteraction: true,
-              // data: notificationData.data,
-              // actions: [
-              //   {
-              //     action: "open",
-              //     title: "開く",
-              //   },
-              //   {
-              //     action: "dismiss",
-              //     title: "閉じる",
-              //   },
-              // ],
             });
             alert("okきたよ");
           } catch (error) {
@@ -252,7 +242,7 @@ export function BlockPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* 8. リマインダーの入力フォーム */}
+            {/* リマインダーの入力フォーム */}
             <Input
               type="date"
               value={date}
@@ -280,7 +270,7 @@ export function BlockPage() {
             >
               リマインダーを追加
             </Button>
-            {/* 9. 通知が許可されていない場合のメッセージ */}
+            {/* 通知が許可されていない場合のメッセージ */}
             {notificationPermission !== "granted" && (
               <p className="text-red-500">
                 通知が許可されていません。ブラウザの設定で通知を許可してください。
@@ -289,12 +279,20 @@ export function BlockPage() {
           </div>
           <div className="mt-8">
             <h2 className="text-lg font-semibold mb-4">現在のリマインダー</h2>
-            {/* 10. 現在のリマインダーを表示 */}
+            {/* 現在のリマインダーを表示 */}
             {reminders.map((reminder) => (
               <div key={reminder.id} className="mb-2 p-2 bg-gray-50 rounded">
                 {reminder.date} {reminder.time}: {reminder.requirement}
               </div>
             ))}
+
+            {/* FCM Tokenの表示 */}
+            {fcmToken && (
+              <div className="mt-4 p-4 bg-blue-50 rounded">
+                <h3 className="text-md font-semibold">FCM Token:</h3>
+                <p className="text-sm break-all">{fcmToken}</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
